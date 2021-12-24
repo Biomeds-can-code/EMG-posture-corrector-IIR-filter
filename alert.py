@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 from PyQt5.QtGui import *
+from time import sleep
 
 
 class MainWindow(QWidget):
@@ -21,6 +22,7 @@ class MainWindow(QWidget):
         self.layout.addWidget(self.label)
         self.setWindowTitle("Sitting properly")
         self.setLayout(self.layout)
+        QtCore.QTimer.singleShot(3000, self.close) # closes after 3 secs, we can change value
         
 
 class AlertWindow(QWidget):
@@ -40,6 +42,7 @@ class AlertWindow(QWidget):
         self.layout.addWidget(self.label)
         self.setWindowTitle("Alert")
         self.setLayout(self.layout)
+        QtCore.QTimer.singleShot(3000, self.close) # closes after 3 secs, we can change value
 
 
 if __name__ == "__main__":
