@@ -2,7 +2,7 @@
 
 The purpose of this project was to apply an IIR filter design to solve a real-life issue. When studying, we spend long periods sitting on a chair and tend to use postures which might be harmful or cause back pain. Our team decided to produce a program which would notify the user if they were slouching, allowing them to know they have to correct their posture.
 
-[embed]https://github.com/Biomeds-can-code/EMG-posture-corrector-IIR-filter/equipment.drawio.pdf[/embed]
+![embed](https://github.com/Biomeds-can-code/EMG-posture-corrector-IIR-filter/equipment.drawio.pdf)
 
 
 As observed in the figure above, 5 different pieces of equipment were used for data acquisition:
