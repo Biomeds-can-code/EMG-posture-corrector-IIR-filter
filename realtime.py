@@ -1,96 +1,129 @@
-import socket
+#!/usr/bin/python3
+"""
+Plots both channels of the Attys in two different windows. Requires pyqtgraph.
+
+"""
+import iir_filter
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import threading # we use threading as several things happening simultaneously
+from scipy import signal
+import threading
+from time import sleep
+import sys
 
-# read from channels 7 and 8
-ECGchannel = 7
-EMGchannel = 8
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
 
-# socket connection to attys_scope
-# first constant (AF_INET) is address family, second (SOCK_DGRAM) is socket type
-s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-listen_addr = ("",65000)
-'''
-Broadcast must be 'on' in attys-scope so that recording can be accessed on Python code
+import numpy as np
 
-The port to be used is 65000
-'''
-s.bind(listen_addr)
-f = s.makefile()
+import pyattyscomm as c
 
-#That's our ringbuffer which accumluates the samples
-#It's emptied every time when the plot window below does a repaint
-ringbuffer = []
+import emg_analysis
+
+ch1 = c.AttysComm.INDEX_Analogue_channel_1
+
+# create a global QT application object
+app = QtGui.QApplication(sys.argv)
+
+# signals to all threads in endless loops that we'd like to run these
+running = True
+
+class QtPanningPlot:
+
+    def __init__(self,title):
+        self.win = pg.GraphicsLayoutWidget()
+        self.win.setWindowTitle(title)
+        self.plt = self.win.addPlot()
+        self.plt.setYRange(-1,1)
+        self.plt.setXRange(0,500)
+        self.curve = self.plt.plot()
+        self.data = []
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.update)
+        self.timer.start(100)
+        self.layout = QtGui.QGridLayout()
+        self.win.setLayout(self.layout)
+        self.win.show()
+        
+    def update(self):
+        self.data=self.data[-500:]
+        if self.data:
+            self.curve.setData(np.hstack(self.data))
+
+    def addData(self,d):
+        self.data.append(d)
 
 
-# for the thread below
-doRun = True
+def getDataThread(qtPanningPlot1,qtPanningPlot2):
 
-# This reads the data from the socket in an endless loop and stores the data in a buffer
-def readSocket():
-    global ringbuffer
-    global ECGchannel
-    global EMGchannel
-    while doRun:
-        # check if data is available
-        data = f.readline()
-        values = np.array(data.split(','),dtype=np.float32)
-        ringbuffer.append(values[EMGchannel])
+    #Filtering for 50Hz and DC
+    f0 = 48.0
+    f1 = 52.0
+    fs=250
+
+    sos1 = signal.butter(3, [f0/(fs/2), f1/(fs/2)], 'bandstop', output='sos')
+        
+    f2 = 0.25
+    f3 = 124
+    sos2 = signal.butter(3, [f2/(fs/2), f3/(fs/2)], 'bandpass', output='sos')
+        
+    iir1 = iir_filter.IIR_filter(sos1)
+    iir2 = iir_filter.IIR_filter(sos2)
         
 
-# start reading data from socket
-t = threading.Thread(target=readSocket)
+    global data 
+    i=0
+    last=0
+    analysis=emg_analysis.emg_analysis()
+    start_slouch=0
+    state=0
+    
+    while running:
+        # loop as fast as we can to empty the kernel buffer
+        while c.hasSampleAvailable():
+            sample = c.getSampleFromBuffer()
+            sample=sample[ch1]
+            sample2= iir1.filter(iir2.filter(sample))
+            sample22=analysis.match_filter(sample2)
+            qtPanningPlot1.addData(sample)
+            qtPanningPlot2.addData(sample22)
+            data.append(sample)
+            [start_slouch,state]=analysis.detector(sample2,start_slouch,state)
+        # let Python do other stuff and sleep a bit
+        sleep(0.1)
+
+s = c.AttysScan()
+s.scan()
+c = s.getAttysComm(0)
+if not c:
+    print("No Attys connected and/or paired")
+    sys.exit()
+
+data=[]
+
+
+# Let's create two instances of plot windows
+qtPanningPlot1 = QtPanningPlot("Unfiltered")
+qtPanningPlot2 = QtPanningPlot("Filtered")
+
+# create a thread which gets the data from the USB-DUX
+t = threading.Thread(target=getDataThread,args=(qtPanningPlot1,qtPanningPlot2,))
+
+# start data acquisition
+c.start()
+
+# start the thread getting the data
 t.start()
 
-# now let's plot the data
-fig, ax = plt.subplots()
-# that's our plotbuffer
-plotbuffer = np.zeros(500)
-# plots an empty line
-line, = ax.plot(plotbuffer)
-# axis
-#ax.set_ylim(0, 0.002)
-ax.set_xlim(0, 125) # might be best to increase this value so we can observe more data (maybe over 5 seconds)
+# showing all the windows
+app.exec_()
 
+c.quit()
 
-# receives the data from the generator below
-def update(data):
-    global plotbuffer
-    # add new data to the buffer
-    plotbuffer=np.append(plotbuffer,data)
-    # only keep the 500 newest ones and discard the old ones
-    plotbuffer=plotbuffer[-500:]
-    # set the new 500 points of desired channel
-    line.set_ydata(plotbuffer)
-    return line,
+# Signal the Thread to stop
+running = False
 
-# this checks in an endless loop if there is data in the ringbuffer
-# of there is data then emit it to the update funnction above
-def data_gen():
-    global ringbuffer
-    #endless loop which gets data
-    while True:
-        # check if data is available
-        if not ringbuffer == []:
-            result = ringbuffer
-            ringbuffer = []
-            yield result
-
-# start the animation
-ani = animation.FuncAnimation(fig, update, data_gen, interval=100)
-
-# show it
-plt.show()
-
-# stop the thread which reads the data
-doRun = False
-# wait for it to finish
+# Waiting for the thread to stop
 t.join()
 
-# close the file and socket
-f.close()
-s.close()
 
 print("finished")
