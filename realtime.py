@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-"""
+'''
 Plots both channels of the Attys in two different windows. Requires pyqtgraph.
+'''
 
-"""
 import iir_filter
 import numpy as np
 from scipy import signal
