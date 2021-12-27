@@ -1,54 +1,9 @@
-import sys
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore
-from PyQt5.QtGui import *
-from time import sleep
+import subprocess
 
-
-class MainWindow(QWidget):
-
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        
-        self.setGeometry(800,300,400,300)
-
-        self.layout = QVBoxLayout()
-        self.label = QLabel("Correct Posture!")
-        self.label.setFont(QFont('Times font', 30))
-        self.label.move(200,300)
-        self.label.setStyleSheet("background-color: lightgreen; color: black; border: 1px solid black")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-
-        self.layout.addWidget(self.label)
-        self.setWindowTitle("Sitting properly")
-        self.setLayout(self.layout)
-        QtCore.QTimer.singleShot(3000, self.close) # closes after 3 secs, we can change value
-        
-
-class AlertWindow(QWidget):
-
-    def __init__(self):
-        super(AlertWindow, self).__init__()
-        
-        self.setGeometry(400,300,400,300)
-
-        self.layout = QVBoxLayout()
-        self.label = QLabel("Stop Slouching!")
-        self.label.setFont(QFont('Times font', 30))
-        self.label.move(200,300)
-        self.label.setStyleSheet("background-color: red; color: white; border: 1px solid black")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-
-        self.layout.addWidget(self.label)
-        self.setWindowTitle("Alert")
-        self.setLayout(self.layout)
-        QtCore.QTimer.singleShot(3000, self.close) # closes after 3 secs, we can change value
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mw = MainWindow()
-    mw.show()
-    aw = AlertWindow()
-    aw.show()
-    sys.exit(app.exec_())
+def sendmessage(icon,message):
+    subprocess.Popen(['notify-send',icon,message])
+    return
+    
+# to add to code
+sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
+sendmessage("--icon=info",'Correct posture! Keep it up!')
