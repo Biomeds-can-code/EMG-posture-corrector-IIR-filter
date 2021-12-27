@@ -6,7 +6,7 @@ The purpose of this project was to apply an IIR filter design to solve a real-li
 
 As observed in the figure above, 5 different pieces of equipment were used for data acquisition:
 
-a) Elastic band with bipolar electrode montage. This device wrapped like a belt around the user's waist and hence ensured close contact between the active electrodes and the subject's skin. The bipolar electrodes observed an adjacent separation distance of 4.5cm between each other, one was placed at the far right side of the trunk, the other 4.5ocm away on the user's back.
+a) Elastic band with bipolar electrode montage. This device wrapped like a belt around the user's waist and hence ensured close contact between the active electrodes and the subject's skin. The bipolar electrodes observed an adjacent separation distance of 4.5cm between each other, one was placed at the far right side of the trunk, the other 4.5cm away on the user's back.
 
 b) One CE Certified Ag/AgCl electrode with semi-liquid electrolytic gel. Placed below the back of the neck, at C5-C7 spinal discs. This electrode was single-use only.
 
