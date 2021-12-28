@@ -1,38 +1,43 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Dec 23 09:08:39 2021
+'''
+Enables assessment of posture. Allows different methods to notify user of incorrect posture.
+'''
 
-@author: sofiahernandezgelado
-"""
 import datetime
 import time
 import iir_filter
 import numpy as np
 from scipy import signal
 import os
-#import alert
+import alert
 
 
 class emg_analysis:
 
-    """
-    This class contains the functions to perform the analysis of an input EMG signal. Intializing the class sets the threshold and sampling frequency of the input signal. Motion of the upper trunk is performed via a match filter. The match filter is a bandpass filter which lets through the frequency of the peak resulting from the extension or flexion of the muscles in the lower back. The result of the match filter is then translated into single detections via the implementation of heuristics in the detector function. 
-    """
+    '''
+    This class contains the functions to perform the analysis of an input EMG signal. 
+    Intializing the class sets the threshold and sampling frequency of the input signal. 
+    Motion of the upper trunk is performed via a match filter. The match filter is a bandpass 
+    filter which lets through the frequency of the peak resulting from the extension or 
+    flexion of the muscles in the lower back. The result of the match filter is then translated 
+    into single detections via the implementation of heuristics in the detector function. 
+    '''
     
     def __init__(self):
     
-        """
+        '''
         Constructor function.
-        """
+        '''
         
         self.threshold=1e-17 #defined threshold 
         self.fs=250
 
     def match_filter(self,data):
     
-        """
-        The match filter allows the signal at frequencies equal to the frequency of the peak due to the flexion and extension of the trunk through.
+        '''
+        The match filter allows the signal at frequencies equal to the frequency of the 
+        peak due to the flexion and extension of the trunk through.
     
         Arguments
         ---------
@@ -44,9 +49,7 @@ class emg_analysis:
         -------
     
         y3: Rectified signal containing data for detection 
-    
-        
-        """
+        '''
 
         # create a 2nd order order bandpass filter that let's through frequency of motion peaks
         f1 = 0.5
@@ -64,7 +67,7 @@ class emg_analysis:
 
     def detector(self,data,start_motion,state,start_time):
     
-        """
+        '''
         The detector function uses the output of the match filter and a defined threshold to notify the user if they are slouching or in a correct position. 
     
         Arguments 
@@ -81,8 +84,7 @@ class emg_analysis:
     
         start_motion: updated time of last recorded motion (if one was detected)
         state: updated current state (if there was a change)
-    
-        """
+        '''
 
 
         ynew=self.match_filter(data) #match filter output
@@ -105,8 +107,8 @@ class emg_analysis:
                     #audible alert
                     os.system('spd-say "Stop slouching"')
                     
-                    #alert printed on window
-                    #alert.runWindow('alert')
+                    #alert printed on popup window
+                    sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
                     
                     state=1 #change state to slouching
                     start_motion=time.time() #record time of slouching
@@ -114,15 +116,15 @@ class emg_analysis:
 		        
                 else: #was in slouched state
                 
-                    #alert printer in terminal 
+                    #alert printed in terminal 
                     print('Good job! Keep it up!')
                     print(datetime.datetime.now().time())
                     
                     #audible alert 
                     os.system('spd-say "Good job"')
                     
-                    #alert printed on window 
-                    #alert.runWindow('main')
+                    #alert printed on popup window 
+                    sendmessage("--icon=info",'Correct posture! Keep it up!')
                     
                     state=0 #change state to not slouched 
                     start_motion=time.time() #record time of motion 
