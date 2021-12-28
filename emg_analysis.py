@@ -108,7 +108,7 @@ class emg_analysis:
                     os.system('spd-say "Stop slouching"')
                     
                     #alert printed on popup window
-                    sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
+                    alert.sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
                     
                     state=1 #change state to slouching
                     start_motion=time.time() #record time of slouching
@@ -124,7 +124,7 @@ class emg_analysis:
                     os.system('spd-say "Good job"')
                     
                     #alert printed on popup window 
-                    sendmessage("--icon=info",'Correct posture! Keep it up!')
+                    alert.sendmessage("--icon=info",'Correct posture! Keep it up!')
                     
                     state=0 #change state to not slouched 
                     start_motion=time.time() #record time of motion 
