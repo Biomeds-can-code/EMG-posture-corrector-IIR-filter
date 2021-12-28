@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-"""
+'''
 Plots both channels of the Attys in two different windows. Requires pyqtgraph.
+'''
 
-"""
 import iir_filter
 import numpy as np
 from scipy import signal
@@ -83,10 +83,13 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
     start_motion = 0 #intialize time of detected slouch/correction of position
     state = 0 #start in not slouched state
     start_time = time.time() #time at which program started
+    c_sample_t=0
     
     while running:
         # loop as fast as we can to empty the kernel buffer
         while c.hasSampleAvailable():
+            #c_sample_t=time.time()
+        
             sample = c.getSampleFromBuffer()
             sample=sample[ch1]
             sample2= iir1.filter(iir2.filter(iir3.filter(sample)))
@@ -97,8 +100,12 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
             #Perform detection 
             [start_motion,state]=analysis.detector(sample2,start_motion,state,start_time)
 
-        # let Python do other stuff and sleep a bit
-        sleep(0.1)
+            # let Python do other stuff and sleep a bit
+            #sleep(0.001)
+            
+            #t_diff= time.time()-c_sample_t
+            #sampling_rate=1/t_diff
+            #print(sampling_rate)
 
 s = c.AttysScan()
 s.scan()
