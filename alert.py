@@ -12,5 +12,5 @@ def sendmessage(icon,message):
     return
     
 # to add to code
-sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
-sendmessage("--icon=info",'Correct posture! Keep it up!')
+#sendmessage("--icon=important",'Careful! You are slouching, sit properly!')
+#sendmessage("--icon=info",'Correct posture! Keep it up!')
