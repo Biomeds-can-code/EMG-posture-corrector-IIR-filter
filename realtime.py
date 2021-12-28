@@ -101,7 +101,7 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
             [start_motion,state]=analysis.detector(sample2,start_motion,state,start_time)
 
             # let Python do other stuff and sleep a bit
-            #sleep(0.001)
+            sleep(0.001)
             
             #t_diff= time.time()-c_sample_t
             #sampling_rate=1/t_diff
