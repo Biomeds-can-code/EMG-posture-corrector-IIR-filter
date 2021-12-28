@@ -8,7 +8,7 @@ As observed in the figure above, 5 different pieces of equipment were used for d
 
 a) Elastic band with bipolar electrode montage. This device wrapped like a belt around the user's waist and hence ensured close contact between the active electrodes and the subject's skin. The bipolar electrodes observed an adjacent separation distance of 4.5cm between each other, one was placed at the far right side of the trunk, the other 4.5cm away on the user's back.
 
-b) One CE Certified Ag/AgCl electrode with semi-liquid electrolytic gel. Placed below the back of the neck, at C5-C7 spinal discs. This electrode was single-use only.
+b) One CE Certified Ag/AgCl electrode with solid gel was placed on the subject's wrist bone. This location hence acted as an electric neutral for the whole circuit, due to the wrist bone's low electrical conductivity. This electrode was single-use only.
 
 c) A standard lead cable, which connected the single-use electrode to the Ground port of the Attys device.
 
