@@ -2,23 +2,19 @@
 '''
 Plots both channels of the Attys in two different windows. Requires pyqtgraph.
 '''
-
 import iir_filter
 import numpy as np
 from scipy import signal
 import threading
-from time import sleep
 import sys
 import time
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
-
 import numpy as np
-
 import pyattyscomm as c
-
 import emg_analysis
 
+#set channel for data acquisiyion
 ch1 = c.AttysComm.INDEX_Analogue_channel_1
 
 # create a global QT application object
@@ -28,6 +24,13 @@ app = QtGui.QApplication(sys.argv)
 running = True
 
 class QtPanningPlot:
+
+    '''
+    
+    QtPanningPlot contains the settings for the Qt plots generated. It also contains the add and update functions of new data and sampling frequency label to the plots.
+    
+    
+    '''
 
     def __init__(self,title,scalel,scaleu):
         self.win = pg.GraphicsLayoutWidget()
@@ -59,8 +62,7 @@ class QtPanningPlot:
         self.data=self.data[-500:] #only keep last 500 samples
         if self.data:
             self.curve.setData(np.hstack(self.data))
-            
-            
+                       
     def updateLabel(self):
         self.Label=self.Label #update sampling frequency label
         self.fsLabel.setText('Sampling Frequency: ' + str(self.Label)+' Hz')
@@ -77,10 +79,18 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
     '''
     getDataThread is the function on which the main thread acts. It collects the initial filtering of the raw emg data and calls on the EMG analysis to perform the posture detection.
      
+     Arguments
+     ---------
+     
+     qtPanningPlot1: instance of unfiltered window
+     qtPanningPlot2: instance of filtered window
+    
     '''
 
     scale=2e5 #scaling so amplitude>1
     start_time = time.time() #timestamp at which program started
+    
+    #Filtering coefficients
     
     #Filtering for 50Hz
     f0 = 48.0
@@ -108,6 +118,8 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
     iir3 = iir_filter.IIR_filter(sos3)
         
     analysis = emg_analysis.emg_analysis() #create instance for analysis of EMG signal
+    
+    #Intializing parameters
     start_motion = 0 #intialize time of detected slouch/correction of position
     state = 0 #start in not slouched state
     sf_time=start_time #initalize time of last time sampling frequency was recorded
@@ -186,8 +198,8 @@ if not c:
 
 
 # Instance of unfiltered and filtered data windows and set yaxis limits
-qtPanningPlot1 = QtPanningPlot("Unfiltered",3000,7000)
-qtPanningPlot2 = QtPanningPlot("Filtered",-1000,3000)
+qtPanningPlot1 = QtPanningPlot("Unfiltered",1000,4000)
+qtPanningPlot2 = QtPanningPlot("Filtered",-1500,1500)
 
 # create a thread which gets the data from the Attys
 t = threading.Thread(target=getDataThread,args=(qtPanningPlot1,qtPanningPlot2,))
