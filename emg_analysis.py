@@ -19,9 +19,8 @@ class emg_analysis:
     This class contains the functions to perform the analysis of an input EMG signal. 
     Intializing the class sets the threshold and sampling frequency of the input signal. 
     Motion of the upper trunk is performed via a match filter. The match filter is a bandpass 
-    filter which lets through the frequency of the peak resulting from the extension or 
-    flexion of the muscles in the lower back. The result of the match filter is then translated 
-    into single detections via the implementation of heuristics in the detector function. 
+    filter which lets through the frequency of the peaks resulting from the extension or 
+    flexion of the muscles in the lower back. The result of the match filter is then translated into single detections via the implementation of heuristics in the detector function. 
     '''
     
     def __init__(self):
@@ -30,19 +29,19 @@ class emg_analysis:
         Constructor function.
         '''
         
-        self.threshold=400e-12 #defined threshold 
-        self.fs=250
+        self.threshold= 1e-3 #defined threshold 
+        self.fs= 250
 
     def match_filter(self,data):
     
         '''
         The match filter allows the signal at frequencies equal to the frequency of the 
-        peak due to the flexion and extension of the trunk through.
+        peaks due to the flexion and extension of the trunk through.
     
         Arguments
         ---------
     
-        data01: Filtered data from the initial filtering step 
+        data: Filtered data from the initial filtering step 
     
     
         Returns 
@@ -51,9 +50,9 @@ class emg_analysis:
         y3: Rectified signal containing data for detection 
         '''
 
-        # create a 2nd order order bandpass filter that let's through frequency of motion peaks
-        f1 = 0.5
-        f2 = 1.5
+        # create a 2nd order order bandpass filter that let's through frequency of peaks due to activity of back muscles
+        f1 = 30
+        f2 = 40
         sos3 = signal.butter(3, [f1/self.fs*2.0, f2/self.fs*2.0 ], 'bandpass',output='sos')
         iir2 = iir_filter.IIR_filter(sos3)
         
