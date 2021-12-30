@@ -16,3 +16,6 @@ d) Attys DAQ. A portable data acquisition device, which transfered the recorded 
 
 e) ASUS-BT500 Dongle. This device strengthened and optimised bluetooth connection between the Attys device and the computer.
 
+The flow of information was carried out following the procedure outlined in the figure below:
+
+![alt text](Flowchart.png)
