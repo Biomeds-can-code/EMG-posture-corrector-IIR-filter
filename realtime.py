@@ -99,23 +99,15 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
 
     sos1 = signal.butter(3, [f0/(fs/2), f1/(fs/2)], 'bandstop', output='sos')
     
-    #Filtering for DC 
-    
-    f2= 0.25
+    #Filtering for DC, ECG and movement artefacts
   
+    f2= 30
+    
     sos2= signal.butter(3, [f2/(fs/2)], 'highpass', output='sos')
-            
-    #Filtering for ECG artefact
-    
-    f3= 5
-    f4= 30
-    
-    sos3= signal.butter(3, [f3/(fs/2), f4/(fs/2)], 'bandstop', output='sos')
     
     #create instances of filters with coefficients
     iir1 = iir_filter.IIR_filter(sos1)
     iir2 = iir_filter.IIR_filter(sos2)
-    iir3 = iir_filter.IIR_filter(sos3)
         
     analysis = emg_analysis.emg_analysis() #create instance for analysis of EMG signal
     
@@ -129,11 +121,12 @@ def getDataThread(qtPanningPlot1,qtPanningPlot2):
         while c.hasSampleAvailable(): #checking if new sample recorded by attys
             sample = c.getSampleFromBuffer()
             sample=sample[ch1]*scale
-            sample2= iir1.filter(iir2.filter(iir3.filter(sample))) #perform filtering 
+            sample2= iir1.filter(iir2.filter(sample)) #perform filtering 
             
             #add new samples to unfiltered and filtered plots
             qtPanningPlot1.addData(sample) 
             qtPanningPlot2.addData(sample2)
+           
             data.append(sample) #collect unfiltered data for sampling frequency handler
             
             #Perform detection 
@@ -198,8 +191,8 @@ if not c:
 
 
 # Instance of unfiltered and filtered data windows and set yaxis limits
-qtPanningPlot1 = QtPanningPlot("Unfiltered",1000,4000)
-qtPanningPlot2 = QtPanningPlot("Filtered",-1500,1500)
+qtPanningPlot1 = QtPanningPlot("Unfiltered",1600,3500)
+qtPanningPlot2 = QtPanningPlot("Filtered",-300,300)
 
 # create a thread which gets the data from the Attys
 t = threading.Thread(target=getDataThread,args=(qtPanningPlot1,qtPanningPlot2,))
