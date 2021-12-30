@@ -30,7 +30,7 @@ class emg_analysis:
         Constructor function.
         '''
         
-        self.threshold=1e-5 #defined threshold 
+        self.threshold=400e-12 #defined threshold 
         self.fs=250
 
     def match_filter(self,data):
