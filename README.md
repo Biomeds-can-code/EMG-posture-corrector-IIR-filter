@@ -19,6 +19,6 @@ e) ASUS-BT500 Dongle. This device strengthened and optimised bluetooth connectio
 The flow of information was carried out following the procedure outlined in the figure below:
 
 <p align="center">
-  ![alt text](Flowchart.png)
+  <![alt text](Flowchart.png)>
 </p>
 
