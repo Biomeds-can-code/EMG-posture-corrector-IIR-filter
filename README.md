@@ -28,6 +28,16 @@ To get started, you must clone the repository using:
 git clone https://github.com/Biomeds-can-code/EMG-posture-corrector-IIR-filter.git 
 and compile/install it.
 
+Make sure the following Python packages are installed on your device:
+```
+pip3 install pyattyscomm
+pip3 install pyqt5
+pip3 install pyqtgraph
+pip3 install scipy
+pip3 install numpy
+pip3 install matplotlib
+```
+
 
 ## Data acquisition
 
