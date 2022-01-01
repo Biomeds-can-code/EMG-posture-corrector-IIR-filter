@@ -18,4 +18,8 @@ e) ASUS-BT500 Dongle. This device strengthened and optimised bluetooth connectio
 
 The flow of information was carried out following the procedure outlined in the figure below:
 
-![alt text](Flowchart.png)
+<p align="center">
+  <img src="https://github.com/Biomeds-can-code/EMG-posture-corrector-IIR-filter/blob/main/Flowchart.png" />
+</p>
+
+
