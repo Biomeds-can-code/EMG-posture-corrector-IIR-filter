@@ -13,25 +13,37 @@ class rununittest:
     
     '''
     This class runs the unit test for a 2nd order IIR filter and a chain of 2nd 
-    order filters. The unit test tests the results of 50Hz removal using a 
+    order filters. The unit test evaluates the results of 50Hz removal using a 
     Butterworth filter. The output of the filter was computed by hand in the 
     function calculate_expected output.
     '''
     
     def __init__(self):
 
-        f0 = 48.0
-        f1 = 52.0
-        fs=250
+        f0 = 48.0 #lower cutoff frequency
+        f1 = 52.0 #upper cutoff frequency
+        fs = 250 #sampling frequency
         
         
         self.x=[1,2,3] #test input signal 
         self.sos = signal.butter(2, [f0/(fs/2), f1/(fs/2)], 'bandstop', output='sos') #Filter coefficients
         self.expected_output=self.calculate_expected_output() #Calculate expected output 'by hand'.
     
+    
     def calculate_expected_output(self):
+    
+        '''
+        This function calculates 'by hand' the expected output from a 2nd order Butterworh bandstop filter.
         
-        #Calculate by hand the output for the FIR filter using banpass coefficients of the high level commands
+        Returns
+        -------
+        
+        yout: expected output from input x=[1,2,3]
+        
+        
+        '''
+        
+        #Calculate by hand the output for the IIR filter using bandstop coefficients of the high level commands
         
         #First 2nd order coefficients
         
@@ -43,7 +55,9 @@ class rununittest:
         a01=s1[4]
         a02=s1[5]
         
-        y=np.zeros(len(self.x))       
+        y=np.zeros(len(self.x))      
+        
+        #compute output 
         y[0]=1*b00
         y[1]=(2+1*-a01)*b00+b01*1
         y[2]=(3+((2+1*-a01)*-a01)+1*-a02)*b00+(2+1*-a01)*b01+1*b02
@@ -59,6 +73,7 @@ class rununittest:
         a11=s2[4]
         a12=s2[5]
         
+        #compute ouput
         yout=np.zeros(len(self.x))          
         yout[0]=xin[0]*b10
         yout[1]=(xin[1]+(xin[0]*-a11))*b10+xin[0]*b11
@@ -70,8 +85,10 @@ class rununittest:
     def test_IIR2_filter(self):
         
         '''
+        
         This function computes a unit test for a 2nd Order IIR Filter 
-        using bandstop Butterworth filter coefficients.
+        using bandstop Butterworth filter coefficients and returns a success or failed statement.
+        
         '''
         
         
@@ -86,6 +103,7 @@ class rununittest:
             y[i] =second_sos.filter(x2[i]) #Filter output through filter with second coefficients to get bandstop
                        
         if np.array_equal(y,self.expected_output): #compare against expected output
+            
             print('Yes! It works!')
             
         else:
@@ -96,23 +114,26 @@ class rununittest:
     def test_IIR_filter(self):
         
        '''
+       
        This function computes a unit test for a chain of 2nd Order Filters
-       using bandstop Butterworth filter coefficients. 
+       using bandstop Butterworth filter coefficients and returns a success or failed statement.
+       
        '''
-
-        iir1 = iir_filter.IIR_filter(self.sos)
-        y2 = np.zeros(len(self.x))
+       
+       
+       iir1 = iir_filter.IIR_filter(self.sos)
+       y2 = np.zeros(len(self.x))
         
-        for i in range(len(self.x)):
-            y2[i] = iir1.filter((self.x[i])) #filter input signal one by one through chain on 2nd order filters
+       for i in range(len(self.x)):
+           y2[i] = iir1.filter((self.x[i])) #filter input signal one by one through chain on 2nd order filters
                          
-        if np.array_equal(y2,self.expected_output)==True: #compare against expected output
-            print('Yes! It works!')
+       if np.array_equal(y2,self.expected_output)==True: #compare against expected output
             
-        else:
-            print('Oh no! There is a bug in the code!')
+           print('Yes! It works!')
             
-        return y2
+       else:
+           print('Oh no! There is a bug in the code!')
+
     
     
 trial=rununittest()
