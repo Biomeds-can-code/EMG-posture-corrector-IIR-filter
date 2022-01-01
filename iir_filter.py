@@ -1,3 +1,10 @@
+# Code by Dr. Bernd Porr
+#
+# (C) 2020 Bernd Porr, mail@berndporr.me.uk
+# Apache 2.0 license
+#
+
+
 '''
 Create classes for 2nd order IIR filter and IIR filter for multiple orders.
 '''
