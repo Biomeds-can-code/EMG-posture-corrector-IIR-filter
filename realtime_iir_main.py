@@ -77,7 +77,7 @@ class QtPanningPlot:
 def getDataThread(qtPanningPlot1,qtPanningPlot2):
 
     '''
-    getDataThread is the function on which the main thread acts. It collects the initial filtering of the raw emg data and calls on the EMG analysis to perform the posture detection.
+    getDataThread is the function on which the main thread acts. It collects the initial filtering of the raw EMG data and calls on the emg_analysis function to perform the posture detection.
      
      Arguments
      ---------
@@ -140,6 +140,7 @@ def sampling_frequency_handler(sf_time,data,n):
 
     
         '''
+        
         The sampling_frequency_handler calculates the sampling frequency using the number of data collected in the last 3 seconds.
     
         Arguments
@@ -153,7 +154,8 @@ def sampling_frequency_handler(sf_time,data,n):
         -------
     
         n_sample_t: if sampling frequency has been calculated returns time at which operation occured
-        nsamples: returns number of samples in data at which the last sampling frequency was calculated 
+        nsamples: returns number of samples in data if sampling frequency was calculated 
+        
         '''
 
 
@@ -165,7 +167,7 @@ def sampling_frequency_handler(sf_time,data,n):
             nsamples=len(data) #calculate how many data in the sample 
             fs=(nsamples-n)/t_since_last #number of new data/time passed
         
-            #add most recent sampling rate to plots
+            #add most recent sampling frequency to plots
             qtPanningPlot1.addLabel(fs)
             qtPanningPlot2.addLabel(fs)
         
