@@ -52,3 +52,11 @@ The flow of information was carried out following the procedure outlined in the 
 </p>
 
 
+## Realtime demonstration
+
+For a visual explanation of how the program works check the following link:
+https://www.youtube.com/watch?v=qLxqRxfgYWU
+
+And for a more thorough explanation of the project and how to place the equipment watch:
+https://www.youtube.com/watch?v=cdfoDsuA3O0
+
