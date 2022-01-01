@@ -16,26 +16,30 @@ import alert
 class emg_analysis:
 
     '''
+    
     This class contains the functions to perform the analysis of an input EMG signal. 
     Intializing the class sets the threshold and sampling frequency of the input signal. 
-    Motion of the upper trunk is performed via a match filter. The match filter is a bandpass 
-    filter which lets through the frequency of the peaks resulting from the extension or 
-    flexion of the muscles in the lower back. The result of the match filter is then translated into single detections via the implementation of heuristics in the detector function. 
+    Motion of the upper trunk is performed via a matched filter. The matched filter is a bandpass filter which lets through the frequency of the peaks resulting from the extension or 
+    flexion of the muscles in the lower back. The result of the matched filter is then translated into single detections via the implementation of heuristics in the detector function. 
+    
     '''
     
     def __init__(self):
     
         '''
+        
         Constructor function.
+        
         '''
         
         self.threshold= 1e-3 #defined threshold 
-        self.fs= 250
+        self.fs= 250 #sampling ffrequency
 
     def match_filter(self,data):
     
         '''
-        The match filter allows the signal at frequencies equal to the frequency of the 
+        
+        The matched filter allows the signal at frequencies equal to the frequency of the 
         peaks due to the flexion and extension of the trunk through.
     
         Arguments
@@ -48,6 +52,7 @@ class emg_analysis:
         -------
     
         y3: Rectified signal containing data for detection 
+        
         '''
 
         # create a 2nd order order bandpass filter that let's through frequency of peaks due to activity of back muscles
@@ -59,7 +64,7 @@ class emg_analysis:
         y3 = []
         y3= iir2.filter(data)
             
-        y3=y3*y3 #improve signal to noise ratio of detection 
+        y3=y3*y3 #increase signal to noise ratio of detection 
  
         return y3
         
@@ -67,7 +72,8 @@ class emg_analysis:
     def detector(self,data,start_motion,state,start_time):
     
         '''
-        The detector function uses the output of the match filter and a defined threshold to notify the user if they are slouching or in a correct position. 
+        
+        The detector function uses the output of the matched filter and a defined threshold to notify the user if they are slouching or in a correct position. 
     
         Arguments 
         ---------
@@ -83,6 +89,7 @@ class emg_analysis:
     
         start_motion: updated time of last recorded motion (if one was detected)
         state: updated current state (if there was a change)
+        
         '''
 
 
@@ -96,8 +103,9 @@ class emg_analysis:
             
         else:
         
-            if ynew>self.threshold and time_since_slouch>minlen: #threshold reached and sufficiend time between last detected trunk motion
-                if state==0: #was in not slouched state
+            if ynew>self.threshold and time_since_slouch>minlen: #threshold reached and sufficient time between last detected trunk motion
+            
+                if state==0: #was in non slouched state
                 
                     #alert printed in terminal 
                     print('Stop slouching!')
