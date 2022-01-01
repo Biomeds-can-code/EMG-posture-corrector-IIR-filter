@@ -1,6 +1,6 @@
 # EMG-posture-corrector-IIR-filter
 
-This project has been designed by 4 Biomedical Engineering students at the University of Glasgow: Sofia Hernandez Helado, Shamsa Al Harthy, Alistair Bachetti and Lucia Munoz Bohollo.
+This project has been designed by 4 Biomedical Engineering students at the University of Glasgow: Sofia Hernandez Gelado, Shamsa Al Harthy, Alistair Bachetti and Lucia Munoz Bohollo.
 
 The purpose of this project was to apply an IIR filter design to solve a real-life issue. When studying, we spend long periods sitting on a chair and tend to use postures which might be harmful or cause back pain. Since the start of the COVID-19 pandemic this problem has only increased. Our team decided to produce a program which would notify the user if they were slouching, allowing them to know they have to correct their posture.
 
